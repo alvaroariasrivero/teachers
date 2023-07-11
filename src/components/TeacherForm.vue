@@ -1,15 +1,17 @@
 <script setup>
-    import {ref} from 'vue';
+    import { ref } from 'vue';
 
     let teacher = ref({
-        teacherName : '',
-        teacherSurename : '',
+        teacherName: '',
+        teacherSurename: '',
         dni: '',
-        subjects : [],
-        docs : false
+        subjects: [],
+        docs: false,
     });
 
     let teachers = ref([]);
+
+    let editedTeacher = ref(null); // Inicializamos con null para indicar que no se está editando ningún profesor actualmente
 
     let subject = ref('');
 
@@ -19,13 +21,24 @@
     };
 
     const handleTeacher = () => {
-        teachers.value.push({
-            teacherName: teacher.value.teacherName,
-            teacherSurename: teacher.value.teacherSurename,
-            dni : teacher.value.dni,
-            subjects: teacher.value.subjects,
-            docs: teacher.value.docs
-        });
+        if (editedTeacher.value === null) {
+            // Agregar nuevo profesor
+            teachers.value.push({
+                teacherName: teacher.value.teacherName,
+                teacherSurename: teacher.value.teacherSurename,
+                dni: teacher.value.dni,
+                subjects: teacher.value.subjects,
+                docs: teacher.value.docs,
+            });
+        } else {
+            // Actualizar profesor existente
+            editedTeacher.value.teacherName = teacher.value.teacherName;
+            editedTeacher.value.teacherSurename = teacher.value.teacherSurename;
+            editedTeacher.value.dni = teacher.value.dni;
+            editedTeacher.value.subjects = teacher.value.subjects;
+            editedTeacher.value.docs = teacher.value.docs;
+            editedTeacher.value = null; // Reiniciamos editedTeacher después de la actualización
+        }
         teacher.value.teacherName = '';
         teacher.value.teacherSurename = '';
         teacher.value.dni = '';
@@ -37,12 +50,10 @@
         teachers.value.splice(index, 1);
     };
 
-    // const editTeacher = (index) => {
-    //     let teachersArray = Array.from(teachers.value)
-    //     console.log('flipándome', teachersArray[1]);
-    // }
-
-
+    const editTeacher = (index) => {
+        editedTeacher.value = teachers.value[index];
+        teacher.value = { ...teachers.value[index] };
+    };
 </script>
 
 <template>
@@ -82,18 +93,18 @@
             <th>Materias</th>
             <th>Documentación</th>
             <tr v-for="(elm, index) in teachers" :key="index">
-                <td>{{ elm.teacherName }}</td>
-                <td>{{ elm.teacherSurename }}</td>
-                <td>{{ elm.dni }}</td>
+                <td>{{ index === editedTeacher ? teacher.teacherName : elm.teacherName }}</td>
+                <td>{{ index === editedTeacher ? teacher.teacherSurename : elm.teacherSurename }}</td>
+                <td>{{ index === editedTeacher ? teacher.dni : elm.dni }}</td>
                 <td>
                     <ul>
-                        <li v-for="(item, index) in elm.subjects" :key="index">{{ item }}</li>
+                    <li v-for="(item, index) in (index === editedTeacher ? teacher.subjects : elm.subjects)" :key="index">{{ item }}</li>
                     </ul>
                 </td>
-                <td v-if="elm.doc">Entregada</td>
+                <td v-if="elm.docs">Entregada</td>
                 <td v-else>No entregada</td>
                 <td><button @click="deleteTeacher(index)">Borrar</button></td>
-                <td><button>Editar</button></td>
+                <td><button @click="editTeacher(index)">Editar</button></td>
             </tr>
         </table>
     </section>
