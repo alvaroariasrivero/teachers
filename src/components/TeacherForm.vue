@@ -31,7 +31,13 @@
         teacher.value.dni = '';
         teacher.value.subjects = [];
         teacher.value.docs = false;
-    }
+    };
+
+    const deleteTeacher = (index) => {
+        teachers.value.splice(index, 1)
+    };
+
+    
 </script>
 
 <template>
@@ -81,6 +87,8 @@
                 </td>
                 <td v-if="elm.doc">Entregada</td>
                 <td v-else>No entregada</td>
+                <td><button @click="deleteTeacher()">Borrar</button></td>
+                <td><button>Editar</button></td>
             </tr>
         </table>
     </section>
