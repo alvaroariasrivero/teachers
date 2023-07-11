@@ -34,10 +34,15 @@
     };
 
     const deleteTeacher = (index) => {
-        teachers.value.splice(index, 1)
+        teachers.value.splice(index, 1);
     };
 
-    
+    // const editTeacher = (index) => {
+    //     let teachersArray = Array.from(teachers.value)
+    //     console.log('flipándome', teachersArray[1]);
+    // }
+
+
 </script>
 
 <template>
@@ -76,7 +81,7 @@
             <th>DNI</th>
             <th>Materias</th>
             <th>Documentación</th>
-            <tr v-for="elm in teachers" :key="elm.dni">
+            <tr v-for="(elm, index) in teachers" :key="index">
                 <td>{{ elm.teacherName }}</td>
                 <td>{{ elm.teacherSurename }}</td>
                 <td>{{ elm.dni }}</td>
@@ -87,7 +92,7 @@
                 </td>
                 <td v-if="elm.doc">Entregada</td>
                 <td v-else>No entregada</td>
-                <td><button @click="deleteTeacher()">Borrar</button></td>
+                <td><button @click="deleteTeacher(index)">Borrar</button></td>
                 <td><button>Editar</button></td>
             </tr>
         </table>
