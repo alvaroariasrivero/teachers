@@ -12,6 +12,26 @@
     let teachers = ref([]);
 
     let subject = ref('');
+
+    const handleSubject = () => {
+        teacher.value.subjects.push(subject.value);
+        subject.value = '';
+    };
+
+    const handleTeacher = () => {
+        teachers.value.push({
+            teacherName: teacher.value.teacherName,
+            teacherSurename: teacher.value.teacherSurename,
+            dni : teacher.value.dni,
+            subjects: teacher.value.subjects,
+            docs: teacher.value.docs
+        });
+        teacher.value.teacherName = '';
+        teacher.value.teacherSurename = '';
+        teacher.value.dni = '';
+        teacher.value.subjects = [];
+        teacher.value.docs = false;
+    }
 </script>
 
 <template>
@@ -32,13 +52,37 @@
         <div>
             <label>Materias: </label>
             <input type="text" v-model="subject">
-            <button>Agregar</button>
+            <button @click="handleSubject()">Agregar</button>
+        </div>
+        <div>
+            <ul>
+                <li v-for="(elem, index) in teacher.subjects" v-bind:key="index">{{ elem }}</li>
+            </ul>
         </div>
         <input type="checkbox" v-model="teacher.docs"> Documentación entregada
-        <button>Enviar</button> 
+        <button @click="handleTeacher()">Enviar</button> 
     </section>
     <section>
         <h3>Listado de profesores: </h3>
+        <table>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>DNI</th>
+            <th>Materias</th>
+            <th>Documentación</th>
+            <tr v-for="elm in teachers" :key="elm.dni">
+                <td>{{ elm.teacherName }}</td>
+                <td>{{ elm.teacherSurename }}</td>
+                <td>{{ elm.dni }}</td>
+                <td>
+                    <ul>
+                        <li v-for="(item, index) in elm.subjects" :key="index">{{ item }}</li>
+                    </ul>
+                </td>
+                <td v-if="elm.doc">Entregada</td>
+                <td v-else>No entregada</td>
+            </tr>
+        </table>
     </section>
 </template>
 
